@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Listening History - Music App</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'home' %}">Music App</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'artist_list' %}">All Artists</a>
+                </li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'listening_history' %}">Listening History</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'user_signup' %}">Sign Up</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center">Your Listening History</h2>
+        {% if listening_data %}
+            <ul class="list-group mt-4">
+                {% for item in listening_data %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <a href="{% url 'song_detail' item.song.id %}">{{ item.song.title }}</a> by {{ item.song.artist.first_name }}
+                            <br>
+                            Genre: {{ item.song.genre }}
+                            <br>
+                            Last Listened On: {{ item.listened_date|date:"F j, Y, g:i a" }}
+                        </div>
+                        <audio controls>
+                            <source src="{{ item.song.file_path.url }}" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-center mt-4">You haven't listened to any songs yet!</p>
+        {% endif %}
+    </div>
+</body>
+</html>
