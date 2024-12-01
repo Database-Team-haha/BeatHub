@@ -118,36 +118,36 @@
             }
         }
     </script>
-    <script>
-        $(document).ready(function () {
-            $(".like-btn").click(function () {
-                const btn = $(this);
-                const songId = btn.data("song-id");
+<script>
+    $(document).ready(function () {
+        // Like button logic
+        $(".like-btn").click(function () {
+            const btn = $(this);
+            const songId = btn.data("song-id");
 
-                $.ajax({
-                    url: "/like-song/" + songId + "/",
-                    method: "POST",
-                    headers: {
-                        "X-CSRFToken": "{{ csrf_token }}",
-                    },
-                    success: function (response) {
-                        if (response.liked) {
-                            btn.css("color", "red");
-                        } else {
-                            btn.css("color", "black");
-                        }
-                    },
-                    error: function (error) {
-                        alert("Error liking the song. Please try again.");
-                    },
-                });
+            $.ajax({
+                url: "/like-song/" + songId + "/",
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                },
+                success: function (response) {
+                    if (response.liked) {
+                        btn.css("color", "red");
+                    } else {
+                        btn.css("color", "black");
+                    }
+                },
+                error: function (error) {
+                    alert("Error liking the song. Please try again.");
+                },
             });
         });
 
         // JavaScript to ensure only one audio plays at a time
         const audios = document.querySelectorAll('audio');
         
-        audios.forEach(audio => {
+        audios.forEach((audio, index) => {
             audio.addEventListener('play', () => {
                 // Pause all other audios when one starts playing
                 audios.forEach(otherAudio => {
@@ -157,7 +157,20 @@
                     }
                 });
             });
+
+            // When the song finishes, pick a random song and play it
+            audio.addEventListener('ended', function () {
+                
+                // Find the audio element of the randomly selected song
+                const nextAudio = audios[index + 1];
+
+                if (nextAudio) {
+                    nextAudio.play();
+                }
+            });
         });
-    </script>
+    });
+</script>
+
 </body>
 </html>
