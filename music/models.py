@@ -31,7 +31,7 @@ class Song(models.Model):
 class ListeningHistory(models.Model):
     song = models.ForeignKey(Song, on_delete=models.CASCADE, related_name="listens")
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    listened_at = models.DateField(default=None, null=True, blank=True)
+    listened_at = models.DateTimeField(default=None, null=True, blank=True)
 
     def __str__(self):
         return f"<{self.song.title}> listened_by {self.user.username}"
@@ -39,7 +39,7 @@ class ListeningHistory(models.Model):
 class LikeHistory(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     song = models.ForeignKey(Song, on_delete=models.CASCADE, related_name="likes")
-    liked_at = models.DateField(default=None, null=True, blank=True)
+    liked_at = models.DateTimeField(default=None, null=True, blank=True)
 
     def __str__(self):
         return f"<{self.song.title}> liked_by {self.user.username}"
