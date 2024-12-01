@@ -1,6 +1,6 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
-from .models import User, GENRE_CHOICES
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from .models import User
 
 class ArtistSignUpForm(UserCreationForm):
     full_name = forms.CharField(max_length=100, required=True)
@@ -8,7 +8,7 @@ class ArtistSignUpForm(UserCreationForm):
     bank_info = forms.CharField(max_length=255, required=True)
     bio = forms.CharField(widget=forms.Textarea, required=True)
     certificate_code = forms.CharField(max_length=5, required=True)
-    genre = forms.ChoiceField(choices=GENRE_CHOICES, required=True)
+    genre = forms.CharField(max_length=40, required=True)
     profile_picture = forms.ImageField(required=False)
     class Meta:
         model = User
@@ -19,3 +19,10 @@ class SimpleUserSignUpForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username', 'password1', 'password2']
+
+
+class LoginForm(AuthenticationForm):
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Username'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password'}))
+
+
