@@ -1,12 +1,13 @@
 
 from django.contrib import messages
-from django.db.models import Count, Avg, Q
+from django.db.models import Count, Q, Max, Case, When
 # Create your views here.
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from .forms import ArtistSignUpForm, SimpleUserSignUpForm, LoginForm
 from .models import User, Artist, Song, LikeHistory, ListeningHistory
+from django.utils import timezone
 
 def artist_signup(request):
     if request.method == 'POST':
@@ -128,7 +129,7 @@ def song_detail(request, song_id):
 
     # Add to listening history if the user is logged in
     if request.user.is_authenticated:
-        ListeningHistory.objects.create(song=song, user=request.user)
+        ListeningHistory.objects.create(song=song, user=request.user, listened_at=timezone.now())
 
     # Annotate the song with the like information for the current user
     if request.user.is_authenticated:
@@ -155,7 +156,45 @@ def like_song(request, song_id):
         liked = False
     else:
         # If not liked, create a new like
-        LikeHistory.objects.create(user=request.user, song=song)
+        LikeHistory.objects.create(user=request.user, song=song, liked_at=timezone.now())
         liked = True
 
     return JsonResponse({"liked": liked})
+
+
+from django.db.models import Max
+
+def listening_history(request):
+    if not request.user.is_authenticated:
+        return redirect('login')  # Redirect to login if the user is not authenticated
+
+    # Fetch unique songs the user has listened to and their latest listening date
+    history = (
+        ListeningHistory.objects.filter(user=request.user)
+        .values('song_id')
+        .annotate(latest_listen_date=Max('listened_at'))
+        .order_by('-latest_listen_date')  # Order by latest listening date in descending order
+    )
+
+    # Fetch related song objects in the same order as `history`
+    song_ids = [item['song_id'] for item in history]
+    songs = Song.objects.filter(id__in=song_ids).order_by(
+        # Preserve the order of song_ids (same as in history)
+        Case(*[When(id=pk, then=pos) for pos, pk in enumerate(song_ids)])
+    )
+
+    # Combine song details with listening date
+    listening_data = [
+        {
+            'song': song,
+            'listened_date': next(
+                (item['latest_listen_date'] for item in history if item['song_id'] == song.id), None
+            )
+        }
+        for song in songs
+    ]
+
+    return render(request, 'listening_history.html', {'listening_data': listening_data})
+
+
+

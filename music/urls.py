@@ -9,4 +9,5 @@ urlpatterns = [
     path('logout/', views.user_logout, name='logout'),
     path("songs/<int:song_id>/", views.song_detail, name="song_detail"),
     path("like-song/<int:song_id>/", views.like_song, name="like_song"),
+    path('listening-history/', views.listening_history, name='listening_history'),
 ]
