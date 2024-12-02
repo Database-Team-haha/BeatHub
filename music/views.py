@@ -188,3 +188,5 @@ def artist_list(request):
     # Fetch all artists
     artists = User.objects.filter(is_artist=True)
     return render(request, 'artist_list.html', {'artists': artists})
+
+
