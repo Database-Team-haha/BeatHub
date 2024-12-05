@@ -1,37 +1,62 @@
 <!DOCTYPE html>
+
 <html>
 <head>
     <title>Home - Music App</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+    body {
+        background: linear-gradient(to left, #ffffff, #74dcff);
+    }
+    </style>
 </head>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+{% load static %}
+<nav class="navbar navbar-expand-lg" style="background: linear-gradient(to right, #00152c, #00BFFF); color: white;">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{% url 'home' %}">Music App</a>
+        <!-- Space for Logo -->
+        <a class="navbar-brand" href="{% url 'home' %}" style="font-weight: bold; font-size: 1.5em; color: aliceblue;">
+            <img src="{% static 'images/gradient_logo.png' %}" alt="Logo" style="height: 50px; object-fit: contain;"> BEATHUB
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'artist_list' %}">All Artists</a>
+                    <a class="nav-link text-white" href="{% url 'artist_list' %}">All Artists</a>
                 </li>
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'listening_history' %}">Listening History</a>
+                        <a class="nav-link text-white" href="{% url 'listening_history' %}">Listening History</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                        <a class="nav-link text-white" href="{% url 'logout' %}">Logout</a>
+                    </li>
+                    <li class="nav-item text-center">
+                        {% if user.profile_picture %}
+                            <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="rounded-circle" style="width: 35px; height: 35px; object-fit: cover;">
+                        {% else %}
+                            <img src="{% static 'images/default_profile.png' %}" alt="Default Profile Picture" class="rounded-circle" style="width: 35px; height: 35px; object-fit: cover;">
+                        {% endif %}
+                        <br>
+                        <span class="text-white" style="font-size: 0.9em;">{{ user.username }}</span>
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'login' %}">Login</a>
+                        <a class="nav-link text-white" href="{% url 'login' %}">Login</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'user_signup' %}">Sign Up</a>
+                        <a class="nav-link text-white" href="{% url 'user_signup' %}">Sign Up</a>
                     </li>
                 {% endif %}
             </ul>
         </div>
     </div>
 </nav>
+
+
+
 
 <body>
     <div class="container mt-5">
