@@ -130,3 +130,8 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/login/'
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']  # For development, optional if your static files are only in apps
+
+# For production (only needed if using `collectstatic`)
+STATIC_ROOT = BASE_DIR / 'staticfiles'

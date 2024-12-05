@@ -1,42 +1,135 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>User Signup</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+
+        body {
+            background: linear-gradient(to left, #ffffff, #74dcff);
+        }
+
+        .signup-container {
+            max-width: 400px;
+            margin: 100px auto;
+            background: white;
+            color: black;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .form-title {
+            text-align: center;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .form-control {
+            margin-bottom: 15px;
+        }
+        .btn-signup {
+            width: 100%;
+            background: #007BFF;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 4px;
+            padding: 10px;
+        }
+        .btn-signup:hover {
+            background: #0056b3;
+        }
+        .alt-option {
+            text-align: center;
+            margin-top: 15px;
+        }
+        .alt-option a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+        .alt-option a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="{% url 'home' %}">Music App</a>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'artist_list' %}">All Artists</a>
-                </li>
-                {% if user.is_authenticated %}
+<body>
+    {% load static %}
+    <nav class="navbar navbar-expand-lg" style="background: linear-gradient(to right, #00152c, #00BFFF); color: white;">
+        <div class="container-fluid">
+            <!-- Space for Logo -->
+            <a class="navbar-brand" href="{% url 'home' %}" style="font-weight: bold; font-size: 1.5em; color: aliceblue;">
+                <img src="{% static 'images/gradient_logo.png' %}" alt="Logo" style="height: 50px; object-fit: contain;"> BEATHUB
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'listening_history' %}">Listening History</a>
+                        <a class="nav-link text-white" href="{% url 'artist_list' %}">All Artists</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-                    </li>
-                {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'login' %}">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'user_signup' %}">Sign Up</a>
-                    </li>
-                {% endif %}
-            </ul>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{% url 'listening_history' %}">Listening History</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{% url 'logout' %}">Logout</a>
+                        </li>
+                        <li class="nav-item text-center">
+                            {% if user.profile_picture %}
+                                <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="rounded-circle" style="width: 35px; height: 35px; object-fit: cover;">
+                            {% else %}
+                                <img src="{% static 'images/default_profile.png' %}" alt="Default Profile Picture" class="rounded-circle" style="width: 35px; height: 35px; object-fit: cover;">
+                            {% endif %}
+                            <br>
+                            <span class="text-white" style="font-size: 0.9em;">{{ user.username }}</span>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{% url 'login' %}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{% url 'user_signup' %}">Sign Up</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="signup-container">
+        <h2 class="form-title">Sign Up</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                {{ form.username }}
+            </div>
+        
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                {{ form.email }}
+            </div>
+        
+            <div class="mb-3">
+                <label for="password1" class="form-label">Password</label>
+                {{ form.password1 }}
+            </div>
+        
+            <div class="mb-3">
+                <label for="password2" class="form-label">Confirm Password</label>
+                {{ form.password2 }}
+            </div>
+        
+            <button type="submit" class="btn btn-signup">Sign Up</button>
+        </form>
+        
+        <div class="alt-option">
+            <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
         </div>
     </div>
-</nav>
-<body>
-    <h1>User Signup</h1>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Sign Up</button>
-    </form>
 </body>
 </html>

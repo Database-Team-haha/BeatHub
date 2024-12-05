@@ -178,7 +178,7 @@ def artist_profile(request, artist_id):
     songs = Song.objects.filter(artist=user)
 
     return render(request, 'artist_profile.html', {
-        'user': user,
+        'userr': user,
         'songs': songs,
         'artist':artist,
     })
